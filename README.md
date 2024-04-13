@@ -30,11 +30,17 @@ AdjacencyList::make('subjects')
 ```
 
 ## Configuration
-### Customizing the `label` and `children` keys.
+### Customizing the `label` key used to display the item's label
 ```php
 AdjacencyList::make('subjects')
     ->labelKey('name')          // defaults to 'label'
-    ->childrenKey('subitems')   // defaults to 'children'
+```
+
+### Customizing the `children` key used to gather the item's children.
+> **Note:** This is only used when not using relationships.
+```php
+AdjacencyList::make('subjects')
+    ->childrenKey('children')   // defaults to 'children'
 ```
 
 ### Customizing the `MaxDepth` of the tree.
@@ -48,6 +54,28 @@ AdjacencyList::make('subjects')
 AdjacencyList::make('subjects')
     ->modal(false)      // defaults to true
 ```
+
+### Disabling creation, edition, deletion, and reordering.
+```php
+AdjacencyList::make('subjects')
+    ->addable(false)
+    ->editable(false)
+    ->deletable(false)
+    ->reorderable(false)
+```
+
+### Customizing actions
+```php
+use Filament\Forms\Actions\Action;
+
+AdjacencyList::make('subjects')
+    ->addAction(fn (Action $action): Action => $action->icon('heroicon-o-plus')->color('primary'))
+    ->addChildAction(fn (Action $action): Action => $action->button())
+    ->editAction(fn (Action $action): Action => $action->icon('heroicon-o-pencil'))
+    ->deleteAction(fn (Action $action): Action => $action->requiresConfirmation())
+    ->reorderAction(fn (Action $action): Action => $action->icon('heroicon-o-arrow-path-rounded-square'))
+```
+
 ## Relationships
 In this example, we'll be creating a Ticketing system, where tickets can be assigned to a department, and departments have subjects.
 
@@ -164,32 +192,6 @@ If your application needs to order the items in the list, you can use the `order
 AdjacencyList::make('subdepartments')
     ->orderColumn('sort')   // or any other column
 ```
-### Disabling creation, edition, deletion, and reordering.
-```php
-AdjacencyList::make('subjects')
-    ->addable(false)
-    ->editable(false)
-    ->deletable(false)
-    ->reorderable(false)
-```
-
-### Customizing actions
-```php
-use Filament\Forms\Actions\Action;
-
-AdjacencyList::make('subjects')
-    ->addAction(fn (Action $action): Action => $action->icon('heroicon-o-plus')->color('primary'))
-    ->addChildAction(fn (Action $action): Action => $action->button())
-    ->editAction(fn (Action $action): Action => $action->icon('heroicon-o-pencil'))
-    ->deleteAction(fn (Action $action): Action => $action->requiresConfirmation())
-    ->reorderAction(fn (Action $action): Action => $action->icon('heroicon-o-arrow-path-rounded-square'))
-```
-> [!IMPORTANT]
-> **Reorder Action**
-> 
-> If you want to add `->extraAttributes()` to the action, you need to add the `['data-sortable-handle' => 'true']` attribute to the array.
-> 
-> if you want to trigger a livewire action on click, you need to chain `->livewireClickHandlerEnabled()` on the action.
 
 ## Changelog
 
@@ -206,7 +208,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## Credits
 
 - [Saade](https://github.com/saade)
-- [Ryan Chandler's Navigation Plugin](https://github.com/ryangjchandler/filament-navigation) for the inspiration.
+- [Ryan Chandler's Navigation Plugin](https://github.com/ryangjchandler/filament-navigation) for his work on the tree UI and complex tree actions.
+- [Hugh](https://github.com/cheesegrits) for his help on supporting trees/ graphs relationships.
 - [All Contributors](../../contributors)
 
 ## License
